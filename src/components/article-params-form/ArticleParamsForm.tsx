@@ -19,6 +19,7 @@ export const ArticleParamsForm = () => {
 			<aside
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
 				<form className={styles.form}>
+					<h1 className={styles.title}>Задайте параметры</h1>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='reset' />
 						<Button title='Применить' type='submit' />
