@@ -9,6 +9,7 @@ import {
 	fontColors,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'components/radio-group';
 import { Separator } from 'components/separator';
@@ -18,9 +19,29 @@ import { useState } from 'react';
 
 export const ArticleParamsForm = () => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [fontFamily, setFontFamily] = useState(
+		defaultArticleState.fontFamilyOption
+	);
+	const [fontSize, setFontSize] = useState(defaultArticleState.fontSizeOption);
+	const [fontColor, setFontColor] = useState(defaultArticleState.fontColor);
+	const [backgroundColor, setBackgroundColor] = useState(
+		defaultArticleState.backgroundColor
+	);
+	const [contentWidth, setContentWidth] = useState(
+		defaultArticleState.contentWidth
+	);
 
 	const onClickArrowButtonHandler = () => {
 		setIsOpen(!isOpen);
+	};
+
+	const onReset = (e: React.FormEvent) => {
+		e.preventDefault(); // предотвращаем стандартный сброс формы, чтобы управлять состоянием вручную
+		setFontFamily(defaultArticleState.fontFamilyOption);
+		setFontSize(defaultArticleState.fontSizeOption);
+		setFontColor(defaultArticleState.fontColor);
+		setBackgroundColor(defaultArticleState.backgroundColor);
+		setContentWidth(defaultArticleState.contentWidth);
 	};
 
 	return (
@@ -28,34 +49,39 @@ export const ArticleParamsForm = () => {
 			<ArrowButton onClick={onClickArrowButtonHandler} isOpen={isOpen} />
 			<aside
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
-				<form className={styles.form}>
+				<form className={styles.form} onReset={onReset}>
 					<h1 className={styles.title}>Задайте параметры</h1>
 					<Select
-						selected={fontFamilyOptions[0]}
+						selected={fontFamily}
 						options={fontFamilyOptions}
 						title='Шрифт'
+						onChange={setFontFamily}
 					/>
 					<RadioGroup
 						name='fontSize'
 						title='Размер'
 						options={fontSizeOptions}
-						selected={fontSizeOptions[0]}
+						selected={fontSize}
+						onChange={setFontSize}
 					/>
 					<Select
-						selected={fontColors[0]}
+						selected={fontColor}
 						options={fontColors}
 						title='Цвет шрифта'
+						onChange={setFontColor}
 					/>
 					<Separator />
 					<Select
-						selected={backgroundColors[0]}
+						selected={backgroundColor}
 						options={backgroundColors}
 						title='Цвет фона'
+						onChange={setBackgroundColor}
 					/>
 					<Select
-						selected={contentWidthArr[0]}
+						selected={contentWidth}
 						options={contentWidthArr}
 						title='Ширина контента'
+						onChange={setContentWidth}
 					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='reset' />
