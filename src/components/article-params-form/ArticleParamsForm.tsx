@@ -16,7 +16,7 @@ import { RadioGroup } from 'components/radio-group';
 import { Separator } from 'components/separator';
 
 import styles from './ArticleParamsForm.module.scss';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 type TArticalParamsFormProps = {
 	setArticleState: (articleState: ArticleStateType) => void;
@@ -37,6 +37,8 @@ export const ArticleParamsForm = ({
 	const [contentWidth, setContentWidth] = useState(
 		defaultArticleState.contentWidth
 	);
+
+	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const onClickArrowButtonHandler = () => {
 		setIsOpen(!isOpen);
@@ -64,10 +66,32 @@ export const ArticleParamsForm = ({
 		});
 	};
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				containerRef.current &&
+				!containerRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		} else {
+			document.removeEventListener('mousedown', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen]);
+
 	return (
 		<>
 			<ArrowButton onClick={onClickArrowButtonHandler} isOpen={isOpen} />
 			<aside
+				ref={containerRef}
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
 				<form className={styles.form} onReset={onReset} onSubmit={onSubmit}>
 					<h1 className={styles.title}>Задайте параметры</h1>
