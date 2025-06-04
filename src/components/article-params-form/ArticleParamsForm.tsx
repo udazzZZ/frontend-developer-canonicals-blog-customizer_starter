@@ -10,6 +10,7 @@ import {
 	backgroundColors,
 	contentWidthArr,
 	defaultArticleState,
+	ArticleStateType,
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'components/radio-group';
 import { Separator } from 'components/separator';
@@ -17,7 +18,13 @@ import { Separator } from 'components/separator';
 import styles from './ArticleParamsForm.module.scss';
 import { useState } from 'react';
 
-export const ArticleParamsForm = () => {
+type TArticalParamsFormProps = {
+	setArticleState: (articleState: ArticleStateType) => void;
+};
+
+export const ArticleParamsForm = ({
+	setArticleState,
+}: TArticalParamsFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [fontFamily, setFontFamily] = useState(
 		defaultArticleState.fontFamilyOption
@@ -42,6 +49,19 @@ export const ArticleParamsForm = () => {
 		setFontColor(defaultArticleState.fontColor);
 		setBackgroundColor(defaultArticleState.backgroundColor);
 		setContentWidth(defaultArticleState.contentWidth);
+
+		setArticleState(defaultArticleState);
+	};
+
+	const onSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setArticleState({
+			fontSizeOption: fontSize,
+			fontFamilyOption: fontFamily,
+			fontColor,
+			backgroundColor,
+			contentWidth,
+		});
 	};
 
 	return (
@@ -49,7 +69,7 @@ export const ArticleParamsForm = () => {
 			<ArrowButton onClick={onClickArrowButtonHandler} isOpen={isOpen} />
 			<aside
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
-				<form className={styles.form} onReset={onReset}>
+				<form className={styles.form} onReset={onReset} onSubmit={onSubmit}>
 					<h1 className={styles.title}>Задайте параметры</h1>
 					<Select
 						selected={fontFamily}
